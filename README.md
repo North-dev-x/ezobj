@@ -2,6 +2,8 @@ ezobj is a Luau library for simple and straightforward class/object/struct creat
 
 Rather than having to deal with metatables, ezobj handles all of that and more behind the scenes while you code in peace!
 
+[Toolbox Link](https://create.roblox.com/store/asset/111257770848071/ezobj)
+
 ### Usage Example
 ezobj allows you to easily create classes and derivative classes.
 ```lua
