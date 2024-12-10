@@ -41,7 +41,7 @@ local ExtendClass = SomeClass:extend {
 	field = "something"; -- overrides field from superclass
 	-- self can also be initialized using the class type if you don't want to check if self exists every time, this is especially helpful when using strict mode
 	method = function(self: ExtendClass, val: string)
-		return val..self.field
+		return self.field..val
 	end;
 }
 type ExtendClass = typeof(ExtendClass) -- used internally in the class for self
