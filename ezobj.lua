@@ -115,8 +115,8 @@ function ezobj:__call<T>(object: T): Object<T>
 	-- where T: {[any]: any}
 	assert(typeof(object) == "table", "Objects must be initialized with a dictionary.")
 	local t = getTableType(object)
-	if t ~= "Dictionary" and t ~= "Empty" then
-		return error("Expected Dictionary or Empty when initializing Object, got "..t)
+	if t ~= "ClassTable" and t ~= "Empty" then
+		return error("Expected ClassTable {[string]: any} or Empty when initializing Object, got "..t)
 	end
 
 	local new_obj_metatable = {__index = object}
