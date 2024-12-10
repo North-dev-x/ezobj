@@ -100,11 +100,6 @@ function ezobj.extend<I,T>(object: I, classtbl: T): InheritedObject<T,I> | Inher
 		end
 		if tbl then
 			for k,v in pairs(tbl) do
-				if rawget(obj,k) ~= nil then
-					if typeof(rawget(obj,k)) ~= typeof[k] then 
-						return error("Failure when constructing object at key "..k..". Expected ".. typeof(obj[k]) ..", got "..typeof(k))
-					end
-				end
 				rawset(obj,k,v)
 			end
 		end
@@ -133,11 +128,6 @@ function ezobj:__call<T>(object: T): Object<T>
 		if tbl then
 			
 			for k,v in pairs(tbl) do
-				if rawget(obj,k) ~= nil then
-					if typeof(rawget(obj,k)) ~= typeof[k] then 
-						return error("Failure when constructing object at key "..k..". Expected ".. typeof(obj[k]) ..", got "..typeof(k))
-					end
-				end
 				rawset(obj,k,v)
 			end
 		end
