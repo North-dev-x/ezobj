@@ -85,7 +85,7 @@ function ezobj.extend<I,T>(object: I, classtbl: T): InheritedObject<T,I> | Inher
 	assert(typeof(classtbl) == "table", "Objects must be initialized with a dictionary.")
 	local t = getTableType(object)
 	if t ~= "ClassTable" and t ~= "Empty" then
-		return error("Expected Dictionary or Empty when initializing Object, got "..t)
+		return error("Expected ClassTable {[string]: any} or Empty when initializing Object, got "..t)
 	end
 	for k,v in pairs(object) do
 		if classtbl[k] == nil then
