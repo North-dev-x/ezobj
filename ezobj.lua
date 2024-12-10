@@ -7,6 +7,8 @@ local function getTableType(t)
 	for k, _ in next, t do
 		if typeof(k) == "number" and k%1 == 0 and k > 0 then
 			isDictionary = false
+		elseif typeof(k) == "string" then
+			return "ClassTable"
 		else
 			isArray = false
 		end
@@ -21,12 +23,7 @@ local function getTableType(t)
 end
 
 
---[[
-	This is the WORST.
-	I have to do this to prevent extended classes being labeled as `*error-type*`. 
-	This is what allows autocomplete to function with classes.
-	Feel free to add more inheritance levels if it is TRULY NEEDED, but 4 should be enough for most projects.
-]]
+
 
 --[[
 	Abstract type for created objects. Can be used as a function return value for functions that return classes.
@@ -47,6 +44,13 @@ export type InheritedObject<T,I> = T
 	extend: <N>(T,N) -> InheritedObject2<T & N,T>;
 	super: I;
 }
+
+--[[
+	This is the WORST.
+	I have to do this to prevent extended classes being labeled as `*error-type*`. 
+	This is what allows autocomplete to function with classes.
+	Feel free to add more inheritance levels if it is TRULY NEEDED, but 4 should be enough for most projects.
+]]
 
 type InheritedObject2<T,I> = T 
 & {
@@ -80,7 +84,7 @@ type InheritedObject4<T,I> = T
 function ezobj.extend<I,T>(object: I, classtbl: T): InheritedObject<T,I> | InheritedObject2<T,I> | InheritedObject3<T,I> | InheritedObject4<T,I>
 	assert(typeof(classtbl) == "table", "Objects must be initialized with a dictionary.")
 	local t = getTableType(object)
-	if t ~= "Dictionary" and t ~= "Empty" then
+	if t ~= "ClassTable" and t ~= "Empty" then
 		return error("Expected Dictionary or Empty when initializing Object, got "..t)
 	end
 	for k,v in pairs(object) do
