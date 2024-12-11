@@ -4,14 +4,18 @@ local function getTableType(t)
 	if next(t) == nil then return "Empty" end
 	local isArray = true
 	local isDictionary = true
+	local isClassTable = true;
 	for k, _ in next, t do
 		if typeof(k) == "number" and k%1 == 0 and k > 0 then
 			isDictionary = false
-		elseif typeof(k) == "string" then
-			return "ClassTable"
+		elseif typeof(k) ~= "string" then
+			isClassTable = false;
 		else
 			isArray = false
 		end
+	end
+	if isClassTable then
+		return "ClassTable"
 	end
 	if isArray then
 		return "Array"
@@ -31,7 +35,7 @@ end
 ]]
 export type Object<T> = T 
 & {
-	new: () -> T;
+	new: (T?) -> T;
 	extend: <I>(T,I) -> InheritedObject<T & I, T>
 }
 --[[
@@ -40,7 +44,7 @@ export type Object<T> = T
 ]]
 export type InheritedObject<T,I> = T 
 & {
-	new: () -> T;
+	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject2<T & N,T>;
 	super: I;
 }
@@ -54,21 +58,21 @@ export type InheritedObject<T,I> = T
 
 type InheritedObject2<T,I> = T 
 & {
-	new: () -> T;
+	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject3<T & N,T>;
 	super: I;
 }
 
 type InheritedObject3<T,I> = T 
 & {
-	new: () -> T;
+	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject4<T & N,T>;
 	super: I;
 }
 
 type InheritedObject4<T,I> = T 
 & {
-	new: () -> T;
+	new: (T?) -> T;
 	extend: <N>(T,N) -> unknown; -- will not work with autocomplete and will no longer be type-safe
 	super: I;
 }
