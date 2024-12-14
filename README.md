@@ -6,7 +6,7 @@ Rather than having to deal with metatables, ezobj handles all of that and more b
 
 ### Usage Example
 ezobj allows you to easily create classes and derivative classes.
-```lua
+```luau
 --[[
 name this variable whatever your favorite class/object keyword is,
 i.e struct, class, def, defstruct, etc
