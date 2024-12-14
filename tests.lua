@@ -6,7 +6,7 @@ function test(test_name: string, func: () -> any?)
 	if success then
 		print("TEST PASSED: "..test_name)
 	elseif err and not success then
-		print("TEST "..test_name.." FAILED WITH ERROR: ".. err)
+		error("TEST "..test_name.." FAILED WITH ERROR: ".. err)
 	end
 end
 
