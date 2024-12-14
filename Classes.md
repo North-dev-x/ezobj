@@ -18,6 +18,29 @@ local Foo = class {
 type Foo = typeof(Foo)
 ```
 
+### Initialization Functions
+Classes can include a `__init__` method which will be called automatically whenever the class is instantiated.
+
+```lua
+local SomeClass = class {
+	character = nil;
+	hrp = nil;
+	
+	__init__ = function(self: SomeClass)
+		if self.character ~= nil then
+			self.hrp = self.character:FindFirstChild("HumanoidRootPart")
+		end
+	end;
+}
+type SomeClass = typeof(SomeClass)
+
+local instance = SomeClass.new {
+	character = plr.Character or plr.CharacterAdded:Wait()
+}
+print(instance.HumanoidRootPart.Position) -- some vector3
+```
+This can be used to add custom constructor behavior, when `.new()`'s default behavior isn't enough for your use case.
+
 ### Instantiating Classes
 
 Classes can be instantiated with `Class.new()`.
