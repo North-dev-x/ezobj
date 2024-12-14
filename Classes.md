@@ -1,12 +1,12 @@
 A class is created by calling the module as a function.
-```lua
+```luau
 function ezobj:__call<T>(object: T): Object<T>
 ```
 Creates a class with the given table as its members.
 `object` must be an [empty table](Abstract%20Classes.md) or a dictionary(key-value pairs).
 
 Example usage:
-```lua
+```luau
 local class = require(ezobj-path)
 
 local Foo = class {
@@ -21,7 +21,7 @@ type Foo = typeof(Foo)
 ### Initialization Functions
 Classes can include a `__init__` method which will be called automatically whenever the class is instantiated.
 
-```lua
+```luau
 local SomeClass = class {
 	character = nil;
 	hrp = nil;
@@ -44,13 +44,13 @@ This can be used to add custom constructor behavior, when `.new()`'s default beh
 ### Instantiating Classes
 
 Classes can be instantiated with `Class.new()`.
-```lua
+```luau
 local newFoo = Foo.new()
 newFoo:foobar() -- 50
 ```
 
 Classes can also be instantiated with initial values.
-```lua
+```luau
 local newFoo = Foo.new {
 	bar = 4905;
 }
@@ -58,14 +58,14 @@ newFoo:foobar() -- 4905
 ```
 
 Classes do not need to be instantiated to be used, but if not instantiating or extending, I would recommend creating a normal table with the same values.
-```lua
+```luau
 Foo:foobar() -- 50
 ```
 
 ### Extending Classes
 
 Classes can be extended with `Class:extend {}`.
-```lua
+```luau
 local Bar = Foo:extend {
 	foo = 30; -- new member unique to this class
 	bar = "bar"; -- overrides field bar from superclass
