@@ -26,9 +26,6 @@ local function getTableType(t)
 	end
 end
 
-
-
-
 --[[
 	Abstract type for created objects. Can be used as a function return value for functions that return classes.
 	where T is type of initialization table
@@ -73,6 +70,27 @@ type InheritedObject3<T,I> = T
 type InheritedObject4<T,I> = T 
 & {
 	new: (T?) -> T;
+	extend: <N>(T,N) -> InheritedObject5<T & N,T>;
+	super: I;
+}
+
+type InheritedObject5<T,I> = T 
+& {
+	new: (T?) -> T;
+	extend: <N>(T,N) -> InheritedObject6<T & N,T>;
+	super: I;
+}
+
+type InheritedObject6<T,I> = T 
+& {
+	new: (T?) -> T;
+	extend: <N>(T,N) -> InheritedObject7<T & N,T>;
+	super: I;
+}
+
+type InheritedObject7<T,I> = T 
+& {
+	new: (T?) -> T;
 	extend: <N>(T,N) -> unknown; -- will not work with autocomplete and will no longer be type-safe
 	super: I;
 }
@@ -85,7 +103,16 @@ type InheritedObject4<T,I> = T
 	Extend the current object into a new object with the given table. Must be a dictionary.
 	Must be called with a :, i.e object:extend {} instead of object.extend {}
 ]] 
-function ezobj.extend<I,T>(object: I, classtbl: T): InheritedObject<T,I> | InheritedObject2<T,I> | InheritedObject3<T,I> | InheritedObject4<T,I>
+function ezobj.extend<I,T>(object: I, classtbl: T)
+	: InheritedObject<T,I>
+	| InheritedObject2<T,I> 
+	| InheritedObject3<T,I> 
+	| InheritedObject4<T,I> 
+	| InheritedObject5<T,I> 
+	| InheritedObject6<T,I> 
+	| InheritedObject7<T,I>
+	-- add more inheritrance levels here if genuinely needed
+	-- {
 	assert(typeof(classtbl) == "table", "Objects must be initialized with a dictionary.")
 	local t = getTableType(object)
 	if t ~= "ClassTable" and t ~= "Empty" then
@@ -107,11 +134,18 @@ function ezobj.extend<I,T>(object: I, classtbl: T): InheritedObject<T,I> | Inher
 				rawset(obj,k,v)
 			end
 		end
+		if obj["__init__"] ~= nil and type(obj.__init__) == "function" then
+			obj:__init__()
+		elseif obj["__init__"] ~= nil and type(obj.__init__) ~= "function" then
+			error("__init__ method of a class must be a function.")
+		end
 		return obj :: Object<T>
 	end
+
 	classtbl.super = object
 
 	return setmetatable(classtbl,{__index = ezobj})
+	-- }
 end
 
 -- Initialize an object with the given table. Must be a dictionary.
@@ -134,6 +168,11 @@ function ezobj:__call<T>(object: T): Object<T>
 			for k,v in pairs(tbl) do
 				rawset(obj,k,v)
 			end
+		end
+		if obj["__init__"] ~= nil and type(obj.__init__) == "function" then
+			obj:__init__()
+		elseif obj["__init__"] ~= nil and type(obj.__init__) ~= "function" then
+			error("__init__ method of a class must be a function.")
 		end
 		return obj :: Object<T>
 	end
