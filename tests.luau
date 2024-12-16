@@ -9,8 +9,15 @@ function test(test_name: string, func: () -> any?)
 		error("TEST "..test_name.." FAILED WITH ERROR: ".. err)
 	end
 end
-
 --- TESTS ---
+
+test("ShouldFail", function()
+	local success,_ = pcall(function() return class "something" end)
+	if success then
+		error("Class should not be permitted to initialize with string")
+	end
+	return 0
+end)
 
 -- test inheritance --
 test("InheritanceTest", function()
