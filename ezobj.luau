@@ -1,3 +1,4 @@
+--!nocheck
 local ezobj = {}
 
 local function getTableType(t)
@@ -113,10 +114,12 @@ function ezobj.extend<I,T>(object: I, classtbl: T)
 	| InheritedObject7<T,I>
 	-- add more inheritrance levels here if genuinely needed
 	-- {
-	assert(typeof(classtbl) == "table", "Objects must be initialized with a dictionary.")
+	if typeof(classtbl) ~= "table" then
+		return error("Expected table when reading class initializer, got "..typeof(classtbl),2)
+	end
 	local t = getTableType(object)
 	if t ~= "ClassTable" and t ~= "Empty" then
-		return error("Expected ClassTable {[string]: any} or Empty when initializing Object, got "..t)
+		return error("Expected ClassTable {[string]: any} or Empty when initializing Object, got "..t,2)
 	end
 	for k,v in pairs(object) do
 		if classtbl[k] == nil then
@@ -137,7 +140,7 @@ function ezobj.extend<I,T>(object: I, classtbl: T)
 		if obj["__init__"] ~= nil and type(obj.__init__) == "function" then
 			obj:__init__()
 		elseif obj["__init__"] ~= nil and type(obj.__init__) ~= "function" then
-			error("__init__ method of a class must be a function.")
+			error("__init__ method of a class must be a function.",2)
 		end
 		return obj :: Object<T>
 	end
@@ -151,10 +154,12 @@ end
 -- Initialize an object with the given table. Must be a dictionary.
 function ezobj:__call<T>(object: T): Object<T>
 	-- where T: {[any]: any}
-	assert(typeof(object) == "table", "Objects must be initialized with a dictionary.")
+	if typeof(object) ~= "table" then
+		return error("Expected table when reading class initializer, got "..typeof(object),2)
+	end
 	local t = getTableType(object)
 	if t ~= "ClassTable" and t ~= "Empty" then
-		return error("Expected ClassTable {[string]: any} or Empty when initializing Object, got "..t)
+		return error("Expected ClassTable {[string]: any} or Empty when initializing Object, got "..t,2)
 	end
 
 	local new_obj_metatable = {__index = object}
@@ -167,12 +172,12 @@ function ezobj:__call<T>(object: T): Object<T>
 			
 			for k,v in pairs(tbl) do
 				rawset(obj,k,v)
-			end
+			end 
 		end
 		if obj["__init__"] ~= nil and type(obj.__init__) == "function" then
 			obj:__init__()
 		elseif obj["__init__"] ~= nil and type(obj.__init__) ~= "function" then
-			error("__init__ method of a class must be a function.")
+			error("__init__ method of a class must be a function.",2)
 		end
 		return obj :: Object<T>
 	end
