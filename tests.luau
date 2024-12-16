@@ -12,9 +12,11 @@ end
 --- TESTS ---
 
 test("ShouldFail", function()
-	local success,_ = pcall(function() return class "something" end)
+	local success,err = pcall(function() return class "something" end)
 	if success then
 		error("Class should not be permitted to initialize with string")
+	else
+		print(err)
 	end
 	return 0
 end)
