@@ -15,7 +15,7 @@ local Foo = class {
 		print(self.bar)
 	end
 }
-type Foo = typeof(Foo)
+type Foo = typeof(Foo.type())
 ```
 
 ### Initialization Functions
@@ -32,7 +32,7 @@ local SomeClass = class {
 		end
 	end;
 }
-type SomeClass = typeof(SomeClass)
+type SomeClass = typeof(SomeClass.type())
 
 local instance = SomeClass.new {
 	character = plr.Character or plr.CharacterAdded:Wait()
