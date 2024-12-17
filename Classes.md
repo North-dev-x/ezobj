@@ -18,6 +18,22 @@ local Foo = class {
 type Foo = typeof(Foo.type())
 ```
 
+### .type() and type hinting
+Created classes get a method `.type()` which returns the type of the initial table you gave the class.
+This is purely a convenience mechanism for type hinting.
+```luau
+local SomeClass = class {something = 3}
+type SomeClass = typeof(SomeClass)
+
+local x: SomeClass = SomeClass.new()
+```
+The autocomplete when using x will contain methods like `.new()`, `:extend()`, and `.type()`, being inconvenient when using the type hint for other usages.
+However, if you replace `typeof(SomeClass)` with the following:
+```luau
+type SomeClass = typeof(SomeClass.type())
+```
+Using the type hint will only autocomplete methods and fields you put into the class yourself, rather than the injected construction and extension methods that `ezobj` includes for you.
+
 ### Initialization Functions
 Classes can include a `__init__` method which will be called automatically whenever the class is instantiated.
 
