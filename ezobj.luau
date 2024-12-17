@@ -34,7 +34,8 @@ end
 export type Object<T> = T 
 & {
 	new: (T?) -> T;
-	extend: <I>(T,I) -> InheritedObject<T & I, T>
+	extend: <I>(T,I) -> InheritedObject<T & I, T>;
+	type: () -> T;
 }
 --[[
 	Abstract type for objects that inherit from other objects. Can be used as a function return value for functions that return inherited classes.
@@ -44,6 +45,7 @@ export type InheritedObject<T,I> = T
 & {
 	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject2<T & N,T>;
+	type: () -> T & {super: I};
 	super: I;
 }
 
@@ -58,6 +60,7 @@ type InheritedObject2<T,I> = T
 & {
 	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject3<T & N,T>;
+	type: () -> T & {super: I};
 	super: I;
 }
 
@@ -65,6 +68,7 @@ type InheritedObject3<T,I> = T
 & {
 	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject4<T & N,T>;
+	type: () -> T & {super: I};
 	super: I;
 }
 
@@ -72,6 +76,7 @@ type InheritedObject4<T,I> = T
 & {
 	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject5<T & N,T>;
+	type: () -> T & {super: I};
 	super: I;
 }
 
@@ -79,6 +84,7 @@ type InheritedObject5<T,I> = T
 & {
 	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject6<T & N,T>;
+	type: () -> T & {super: I};
 	super: I;
 }
 
@@ -86,6 +92,7 @@ type InheritedObject6<T,I> = T
 & {
 	new: (T?) -> T;
 	extend: <N>(T,N) -> InheritedObject7<T & N,T>;
+	type: () -> T & {super: I};
 	super: I;
 }
 
@@ -93,6 +100,7 @@ type InheritedObject7<T,I> = T
 & {
 	new: (T?) -> T;
 	extend: <N>(T,N) -> unknown; -- will not work with autocomplete and will no longer be type-safe
+	type: () -> T & {super: I};
 	super: I;
 }
 --[[
@@ -144,12 +152,14 @@ function ezobj.extend<I,T>(object: I, classtbl: T)
 		end
 		return obj :: Object<T>
 	end
-
 	classtbl.super = object
-
+	classtbl.type = function(): T & {super: I}
+		return classtbl
+	end
 	return setmetatable(classtbl,{__index = ezobj})
 	-- }
 end
+
 
 -- Initialize an object with the given table. Must be a dictionary.
 function ezobj:__call<T>(object: T): Object<T>
@@ -181,7 +191,9 @@ function ezobj:__call<T>(object: T): Object<T>
 		end
 		return obj :: Object<T>
 	end
-
+	object.type = function(): T & {super: I}
+		return object
+	end
 	return setmetatable(object,{__index = ezobj})
 end
 
