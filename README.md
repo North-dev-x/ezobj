@@ -28,7 +28,7 @@ local SomeClass = class {
 		end
 	end;
 }
-type SomeClass = typeof(SomeClass) -- define class type to use as a type hint if wanted later
+type SomeClass = typeof(SomeClass.type()) -- define class type to use as a type hint if wanted later
 
 -- call singleton method without constructing the class
 SomeClass.hello_world()
@@ -44,7 +44,7 @@ local ExtendClass = SomeClass:extend {
 		return self.field..val
 	end;
 }
-type ExtendClass = typeof(ExtendClass) -- used internally in the class for self
+type ExtendClass = typeof(ExtendClass.type()) -- used internally in the class for self
 
 -- construct an instance of the class with a default value
 local y = ExtendClass.new {
