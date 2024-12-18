@@ -112,7 +112,7 @@ type InheritedObject7<T,I> = T
 	Extend the current object into a new object with the given table. Must be a dictionary.
 	Must be called with a :, i.e object:extend {} instead of object.extend {}
 ]] 
-function ezobj.extend<I,T>(object: I, classtbl: T)
+function ezobj.extend<I,T>(object: I, classtbl: T & (I?))
 	: InheritedObject<T,I>
 	| InheritedObject2<T,I> 
 	| InheritedObject3<T,I> 
@@ -179,7 +179,7 @@ function ezobj:__call<T>(object: T): Object<T>
 			rawset(obj,i,v)
 		end
 		if tbl then
-			
+
 			for k,v in pairs(tbl) do
 				rawset(obj,k,v)
 			end 
