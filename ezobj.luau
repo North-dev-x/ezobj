@@ -138,6 +138,9 @@ function ezobj.extend<I,T>(object: I, classtbl: T & (I?))
 	classtbl.new = function(tbl: T?): Object<T>
 		local obj = setmetatable({},new_obj_metatable)
 		for i,v in pairs(classtbl) do
+			if i == "new" or i == "type" then
+				continue;
+			end
 			rawset(obj,i,v)
 		end
 		if tbl then
@@ -173,9 +176,12 @@ function ezobj:__call<T>(object: T): Object<T>
 	end
 
 	local new_obj_metatable = {__index = object}
-	object.new = function(tbl: T?): Object<T>
+	object.new = function(tbl: T?): T
 		local obj = setmetatable({},new_obj_metatable)
 		for i,v in pairs(object) do
+			if i == "new" or i == "type" then
+				continue;
+			end
 			rawset(obj,i,v)
 		end
 		if tbl then
