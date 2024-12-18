@@ -135,7 +135,7 @@ function ezobj.extend<I,T>(object: I, classtbl: T & (I?))
 		end
 	end
 	local new_obj_metatable = {__index = classtbl}
-	classtbl.new = function(tbl: T?): Object<T>
+	classtbl.new = function(tbl: T?): T
 		local obj = setmetatable({},new_obj_metatable)
 		for i,v in pairs(classtbl) do
 			if i == "new" or i == "type" then
