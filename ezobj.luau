@@ -104,8 +104,6 @@ type InheritedObject7<T,I> = T
 	super: I;
 }
 
-type Constructed<T,I> = T & {super: I}
-
 --[[
 	add more inheritance levels here if you genuinely need it
 	also add them to the unioned return type of mod.extend()
