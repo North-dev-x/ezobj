@@ -75,7 +75,7 @@ test("AbstractClassTest", function()
 			return self.some_field
 		end;
 	}
-	
+	print(new_abstract)
 	print(new_abstract:some_method())
 	return 0; 
 end)
@@ -108,11 +108,8 @@ test("NewSuperMethodTest", function()
 	
 	assert(mul:run(10) == 30, "This should return 30.")
 	mul.val = 5;
-	local val = mul.super:run(2) 
-	
-	print(val)
-	assert(val == 2.5, "This should return 2.5.")
-	
+	assert(mul.super:run(2) == 2.5, "This should return 2.5.")
+	assert(mul.super.val == 3, "This should equal 3.") -- test super property
 	
 	return 0
 end)
@@ -147,3 +144,5 @@ test("InitMethodTest",function()
 		error(err)
 	end
 end)
+
+
