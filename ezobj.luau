@@ -53,7 +53,7 @@ export type InheritedObject<T,I> = T
 	This is the WORST.
 	I have to do this to prevent extended classes being labeled as `*error-type*`. 
 	This is what allows autocomplete to function with classes.
-	Feel free to add more inheritance levels if it is TRULY NEEDED, but 4 should be enough for most projects.
+	Feel free to add more inheritance levels if it is TRULY NEEDED, but 7 should be enough for most projects.
 ]]
 
 type InheritedObject2<T,I> = T 
@@ -156,8 +156,8 @@ function ezobj.extend<I,T>(object: I, classtbl: T)
 		end
 		local super = {}
 		for i,func in pairs(object) do
-			if obj[i] and type(func) == "function" and type(obj[i]) == "function" then
-				local classtbl_key = "__S__"..i
+			if obj[i] and type(func) == "function" and type(obj[i]) == "function" and i ~= "new" and i ~= "type" then
+				local classtbl_key: string = "__S__"..i
 				obj[classtbl_key] = func
 				super[i] = function(...)
 					local args = {...}
@@ -166,10 +166,19 @@ function ezobj.extend<I,T>(object: I, classtbl: T)
 					end
 					return func(obj,table.unpack(args))
 				end
+			elseif obj[i] and type(func) ~= "function" then
+				local classtbl_key: string = "__S__"..i
+				local other: any = func :: any
+				obj[classtbl_key] = other
 			end
 		end
+		setmetatable(super, {
+			__index = function(self,index)
+				return obj["__S__"..index]
+			end,
+		})
 		obj.super = super;
-		
+
 		return obj
 	end
 
