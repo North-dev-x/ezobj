@@ -43,7 +43,7 @@ export type Object<T> = T
 ]]
 export type InheritedObject<T,I> = T 
 & {
-	new: (T?) -> T;
+	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject2<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
@@ -58,7 +58,7 @@ export type InheritedObject<T,I> = T
 
 type InheritedObject2<T,I> = T 
 & {
-	new: (T?) -> T;
+	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject3<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
@@ -66,7 +66,7 @@ type InheritedObject2<T,I> = T
 
 type InheritedObject3<T,I> = T 
 & {
-	new: (T?) -> T;
+	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject4<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
@@ -74,7 +74,7 @@ type InheritedObject3<T,I> = T
 
 type InheritedObject4<T,I> = T 
 & {
-	new: (T?) -> T;
+	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject5<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
@@ -82,7 +82,7 @@ type InheritedObject4<T,I> = T
 
 type InheritedObject5<T,I> = T 
 & {
-	new: (T?) -> T;
+	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject6<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
@@ -90,7 +90,7 @@ type InheritedObject5<T,I> = T
 
 type InheritedObject6<T,I> = T 
 & {
-	new: (T?) -> T;
+	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject7<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
@@ -98,11 +98,14 @@ type InheritedObject6<T,I> = T
 
 type InheritedObject7<T,I> = T 
 & {
-	new: (T?) -> T;
+	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> unknown; -- will not work with autocomplete and will no longer be type-safe
 	type: () -> T & {super: I};
 	super: I;
 }
+
+type Constructed<T,I> = T & {super: I}
+
 --[[
 	add more inheritance levels here if you genuinely need it
 	also add them to the unioned return type of mod.extend()
@@ -112,7 +115,7 @@ type InheritedObject7<T,I> = T
 	Extend the current object into a new object with the given table. Must be a dictionary.
 	Must be called with a :, i.e object:extend {} instead of object.extend {}
 ]] 
-function ezobj.extend<I,T>(object: I, classtbl: T & (I?))
+function ezobj.extend<I,T>(object: I, classtbl: T)
 	: InheritedObject<T,I>
 	| InheritedObject2<T,I> 
 	| InheritedObject3<T,I> 
@@ -135,7 +138,7 @@ function ezobj.extend<I,T>(object: I, classtbl: T & (I?))
 		end
 	end
 	local new_obj_metatable = {__index = classtbl}
-	classtbl.new = function(tbl: T?): T
+	classtbl.new = function(tbl: T?): T & {super: I}
 		local obj = setmetatable({},new_obj_metatable)
 		for i,v in pairs(classtbl) do
 			if i == "new" or i == "type" then
@@ -153,8 +156,25 @@ function ezobj.extend<I,T>(object: I, classtbl: T & (I?))
 		elseif obj["__init__"] ~= nil and type(obj.__init__) ~= "function" then
 			error("__init__ method of a class must be a function.",2)
 		end
-		return obj :: Object<T>
+		local super = {}
+		for i,func in pairs(object) do
+			if obj[i] and type(func) == "function" and type(obj[i]) == "function" then
+				local classtbl_key = "__S__"..i
+				obj[classtbl_key] = func
+				super[i] = function(...)
+					local args = {...}
+					if args[1] == obj.super then
+						table.remove(args,1)
+					end
+					return func(obj,table.unpack(args))
+				end
+			end
+		end
+		obj.super = super;
+		
+		return obj
 	end
+
 	classtbl.super = object
 	classtbl.type = function(): T & {super: I}
 		return classtbl
