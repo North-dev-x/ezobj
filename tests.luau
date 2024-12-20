@@ -31,6 +31,7 @@ test("InheritanceTest", function()
 			end
 			return self.val / to_divide_with;
 		end,
+	
 	}
 	type SomeClass = typeof(SomeClass);
 	
@@ -63,7 +64,7 @@ end)
 test("AbstractClassTest", function()
 	-- abstract data structure
 	local SomeAbstract = class({}::{
-		some_field: number;
+		some_field: number; 
 		some_method: (any?) -> any?;
 	})
 	
@@ -77,6 +78,43 @@ test("AbstractClassTest", function()
 	
 	print(new_abstract:some_method())
 	return 0; 
+end)
+
+
+
+test("NewSuperMethodTest", function()
+	local Dividable = class {
+		val = 3;
+		run = function(self: any?, other_val: number): number?
+			if other_val == 0 then
+				return nil
+			end
+			
+			return self.val / other_val
+		end,
+	}
+	type Dividable = typeof(Dividable)
+	local Multiplicable = Dividable:extend {
+		val = 4;
+		run = function(self: any?, other_val: number): number
+			return self.val * other_val
+		end,
+	}
+	type Multiplicable = typeof(Multiplicable)
+	
+	local mul = Multiplicable.new {
+		val = 3;
+	}
+	
+	assert(mul:run(10) == 30, "This should return 30.")
+	mul.val = 5;
+	local val = mul.super:run(2) 
+	
+	print(val)
+	assert(val == 2.5, "This should return 2.5.")
+	
+	
+	return 0
 end)
 
 -- test __init__ --
