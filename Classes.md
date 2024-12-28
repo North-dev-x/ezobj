@@ -121,12 +121,6 @@ Foo.Bar = 400 -- ERROR: attempt to modify a readonly table
 ```
 *You can't add new fields to a class. if you need to do this, see **Initialization Functions** above.*
 
-```luau
-local newFoo = Foo.new()
-newFoo.bar = "test" -- ERROR: Cannot add new keys to an already constructed class.
-```
-*Instantiated classes cannot host new fields/methods.*
-
 ### Typechecking
 Attempting to instantiate a class with incorrect types will result in a runtime error.
 ```lua
