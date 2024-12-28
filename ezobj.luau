@@ -162,7 +162,7 @@ function ezobj.extend<I,T>(object: I, classtbl: T)
 			classtbl[k] = v
 		end
 	end
-	local new_obj_metatable = {__index = object, __newindex = function() return error("Cannot add new keys to an already constructed class.") end}
+	local new_obj_metatable = {__index = object}
 	classtbl.new = function(tbl: T?): T & {super: I}
 		local obj = {} 
 		for i,v in pairs(classtbl) do
@@ -239,7 +239,7 @@ function ezobj:__call<T>(object: T): Object<T>
 	for k,_ in object do
 		table.insert(keys_in_object,k)
 	end
-	local new_obj_metatable = {__index = object, __newindex = function() return error("Cannot add new keys to an already constructed class.") end}
+	local new_obj_metatable = {__index = object}
 	object.new = function(tbl: T): T
 		local obj = {}
 		for i,v in pairs(object) do
