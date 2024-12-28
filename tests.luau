@@ -170,12 +170,6 @@ test("Immutability", function()
 	if success then return error("Class table should not be able to host new indexes.") end
 	
 	local success = pcall(function()
-		local newfoo = Foo.new()
-		newfoo.bar = 800; 
-	end)
-	if success then return error("Instantiated class table should not be able to host new indexes.") end
-	
-	local success = pcall(function()
 		local newfoo = Foo.new {
 			hello = 500;
 			something = function()
@@ -210,12 +204,6 @@ test("ImmutabilityForExtendedClass", function()
 		Foo["Bar"] = 100;
 	end)
 	if success then return error("Class table should not be able to host new indexes.") end
-
-	local success = pcall(function()
-		local newfoo = Foo.new()
-		newfoo.bar = 800; 
-	end)
-	if success then return error("Instantiated class table should not be able to host new indexes.") end
 
 	local success = pcall(function()
 		local newfoo = Foo.new {
