@@ -89,6 +89,61 @@ local Bar = Foo:extend {
 Bar:foobar() -- "bar" - inherits this method from superclass Foo
 Bar.super:foobar() -- 50 - superclass methods only access the super table
 ```
+
 Doing this creates a new class, with all of the members of the superclass, and any added in the provided table.
 
 The superclass itself can be accessed with `Class.super`.
+
+### Immutability
+Classes, after creation, cannot have their structure altered. 
+The following code examples will error due to immutability.
+```luau
+local Foo = class {
+	something = 5;
+	hello = "Hello";
+	method = function(self)
+		return self.hello;
+	end,
+}
+Foo.hello = "Bar" -- ERROR: attempt to modify a readonly table
+```
+*You can't edit fields within a class, it must be constructed first*
+
+```luau
+local Foo = class {
+	something = 5;
+	hello = "Hello";
+	method = function(self)
+		return self.hello;
+	end,
+}
+Foo.Bar = 400 -- ERROR: attempt to modify a readonly table
+```
+*You can't add new fields to a class. if you need to do this, see **Initialization Functions** above.*
+
+```luau
+local newFoo = Foo.new()
+newFoo.bar = "test" -- ERROR: Cannot add new keys to an already constructed class.
+```
+*Instantiated classes cannot host new fields/methods.*
+
+### Typechecking
+Attempting to instantiate a class with incorrect types will result in a runtime error.
+```lua
+local Foo = class {
+	something = 5;
+	hello = "Hello";
+	method = function(self)
+		return self.hello;
+	end,
+}
+
+local newfoo = Foo.new { 
+	hello = 500; -- ERROR: Expected string when instantiating object key 'hello', got number
+	something = function() 
+		print("something");
+	end,
+	method = false;
+}
+```
+
