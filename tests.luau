@@ -1,12 +1,17 @@
 --!strict
 local class = require(script.Parent)
 
+local passed = 0;
+local failed = 0;
+local errors = {}
+
 function test(test_name: string, func: () -> any?)
 	local success, err = pcall(func)
 	if success then
-		print("TEST PASSED: "..test_name)
+		passed += 1
 	elseif err and not success then
-		error("TEST "..test_name.." FAILED WITH ERROR: ".. err)
+		failed += 1
+		table.insert(errors,"TEST "..test_name.." FAILED WITH ERROR: ".. err)
 	end
 end
 --- TESTS ---
@@ -17,7 +22,7 @@ test("ShouldFail", function()
 		error("Class should not be permitted to initialize with string")
 	else
 		print(err)
-	end
+	end 
 	return 0
 end)
 
@@ -31,10 +36,10 @@ test("InheritanceTest", function()
 			end
 			return self.val / to_divide_with;
 		end,
-	
+
 	}
 	type SomeClass = typeof(SomeClass);
-	
+
 	local ExtendedClass = SomeClass:extend {
 		mul = function(self: any?, ...: number)
 			local val = self.val;
@@ -44,14 +49,14 @@ test("InheritanceTest", function()
 			return val
 		end,
 	}
-	
+
 	local newMathObject = ExtendedClass.new {
 		val = 20;
 	}
 	print(newMathObject:div(5))
 	print(newMathObject:mul(5))
 	print(newMathObject:mul(4,5,6))
-	
+
 	-- should fail
 	local success,_ = pcall(function() return newMathObject:div(0) end)
 	if success then
@@ -67,7 +72,7 @@ test("AbstractClassTest", function()
 		some_field: number; 
 		some_method: (any?) -> any?;
 	})
-	
+
 	-- instantiate abstract data structure with default values
 	local new_abstract = SomeAbstract.new {
 		some_field = 4;
@@ -89,7 +94,7 @@ test("NewSuperMethodTest", function()
 			if other_val == 0 then
 				return nil
 			end
-			
+
 			return self.val / other_val
 		end,
 	}
@@ -101,16 +106,16 @@ test("NewSuperMethodTest", function()
 		end,
 	}
 	type Multiplicable = typeof(Multiplicable)
-	
+
 	local mul = Multiplicable.new {
 		val = 3;
 	}
-	
+
 	assert(mul:run(10) == 30, "This should return 30.")
 	mul.val = 5;
 	assert(mul.super:run(2) == 2.5, "This should return 2.5.")
 	assert(mul.super.val == 3, "This should equal 3.") -- test super property
-	
+
 	return 0
 end)
 
@@ -145,4 +150,89 @@ test("InitMethodTest",function()
 	end
 end)
 
+test("Immutability", function()
+	local Foo = class {
+		something = 5;
+		hello = "Hello";
+		method = function(self)
+			return self.hello;
+		end,
+	}
 
+	local success = pcall(function()
+		Foo.hello = "World"
+	end)
+	if success then return error("Class table should not be mutable.") end
+	
+	local success = pcall(function()
+		Foo["Bar"] = 100;
+	end)
+	if success then return error("Class table should not be able to host new indexes.") end
+	
+	local success = pcall(function()
+		local newfoo = Foo.new()
+		newfoo.bar = 800; 
+	end)
+	if success then return error("Instantiated class table should not be able to host new indexes.") end
+	
+	local success = pcall(function()
+		local newfoo = Foo.new {
+			hello = 500;
+			something = function()
+				print("something");
+			end,
+			method = false;
+		}
+	end)
+	if success then return error("Class should not be able to be instantiated with incorrect types.") end
+	
+	return 0
+end)
+
+test("ImmutabilityForExtendedClass", function()
+	local superclass = class {
+		something = 5;
+		hello = "Hello";
+		method = function(self)
+			return self.hello;
+		end,
+	}
+	
+	local Foo = superclass:extend {
+		baz = 500;
+	}
+	local success = pcall(function()
+		Foo.hello = "World"
+	end)
+	if success then return error("Class table should not be mutable.") end
+
+	local success = pcall(function()
+		Foo["Bar"] = 100;
+	end)
+	if success then return error("Class table should not be able to host new indexes.") end
+
+	local success = pcall(function()
+		local newfoo = Foo.new()
+		newfoo.bar = 800; 
+	end)
+	if success then return error("Instantiated class table should not be able to host new indexes.") end
+
+	local success = pcall(function()
+		local newfoo = Foo.new {
+			hello = 500;
+			something = function()
+				print("something");
+			end,
+			method = false;
+		}
+	end)
+	if success then return error("Class should not be able to be instantiated with incorrect types.") end
+
+	return 0;
+end)
+
+
+print("\n\n\n        "..passed.." passed, "..failed.." failed")
+if #errors > 0 then
+	
+end
