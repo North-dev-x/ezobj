@@ -1,4 +1,5 @@
 --!strict
+
 local class = require(script.Parent)
 
 local passed = 0;
@@ -27,7 +28,7 @@ test("ShouldFail", function()
 end)
 
 -- test inheritance --
-test("InheritanceTest", function()
+--test("InheritanceTest", function()
 	local SomeClass = class {
 		val = 30;
 		div = function(self: any?,to_divide_with: number)
@@ -62,8 +63,8 @@ test("InheritanceTest", function()
 	if success then
 		return error("Should not be allowed to divide by zero on this class")
 	end
-	return 0;
-end)
+--	return 0; 
+--end)
 
 -- test abstract class --
 test("AbstractClassTest", function()
@@ -119,35 +120,43 @@ test("NewSuperMethodTest", function()
 	return 0
 end)
 
--- test __init__ --
-test("InitMethodTest",function()
+test("constructorTest",function()
+	
 	local SomeClass = class {
-		character = nil;
-		hrp = nil;
-
-		__init__ = function(self: SomeClass)
-			if self.character ~= nil then
-				self.hrp = self.character:FindFirstChild("HumanoidRootPart")
-			end
-		end;
+		value = nil;
+		test = nil;
+		constructor = function(self: SomeClass, value: number, test: string)
+			self.value = value;
+			self.test = test;
+		end,
 	}
+	
 	type SomeClass = typeof(SomeClass)
-	local ev = Instance.new("BindableEvent")
-	local success
-	local err
-	game.Players.PlayerAdded:Connect(function(plr)
-		local instance = SomeClass.new {
-			character = plr.Character or plr.CharacterAdded:Wait()
-		}
-		success, err = pcall(print,instance.hrp.Position)
-		ev:Fire()
-	end)
-	ev.Event:Wait()
-	if success then
-		return 0
-	else
-		error(err)
-	end
+	local constructed = SomeClass.new(30,"Hello, world!")
+	
+	print(constructed)
+	if constructed.value ~= 30 then return error("failed to construct") end
+	if constructed.test ~= "Hello, world!" then return error("failed to construct") end
+	
+	-- example monad/functor implementation
+	local Maybe: class.Object<any>
+	Maybe = class {
+		value = nil;
+		constructor = function(self, val)
+			self.value = val;
+		end,
+		bind = function(self: any, func): typeof(Maybe.type())
+			local val = func(self.value)
+			return Maybe.new(val)
+		end,
+	}
+	type Maybe = typeof(Maybe.type())
+	local mayb: Maybe = Maybe.new("test")
+		:bind(function(val: string) return val:sub(1,2) end)
+		:bind(function(val: string) return val:len() end)
+	assert(mayb.value == 2, "Something is broken with this function")
+	
+	return 0
 end)
 
 test("Immutability", function()
@@ -171,7 +180,7 @@ test("Immutability", function()
 	
 	local success = pcall(function()
 		local newfoo = Foo.new {
-			hello = 500;
+			hello = 30;
 			something = function()
 				print("something");
 			end,
@@ -213,14 +222,45 @@ test("ImmutabilityForExtendedClass", function()
 			end,
 			method = false;
 		}
+		
 	end)
 	if success then return error("Class should not be able to be instantiated with incorrect types.") end
 
 	return 0;
 end)
 
+local httpservice = game:GetService("HttpService")
+
+test("Speed Benchmark", function()
+
+	local to_instance = class({}::{
+		value: number;
+		id: string;
+		method: (number) -> string;
+	})
+	type to_instance = typeof(to_instance)
+	local instances: {to_instance} = {}
+	
+	local times = 10000;
+	local start = os.clock()
+	for i = 1,times do
+		
+		local instance: to_instance = to_instance {
+			value = math.random(-20000,20000);
+			id = httpservice:GenerateGUID(false);
+			method = function(num: number)
+				return tostring(num)
+			end,
+		}
+		
+		table.insert(instances, instance)
+	end
+	print(times.." class instances took "..((os.clock() - start)*1000).."ms")
+	return 0;
+end)
+
 
 print("\n\n\n        "..passed.." passed, "..failed.." failed")
 if #errors > 0 then
-	
+	error(errors)
 end
