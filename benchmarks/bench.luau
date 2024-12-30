@@ -6,7 +6,7 @@ local to_instance = class({}::{
 	method: (any) -> string;
 })
 
-type to_instance = typeof(to_instance)
+type to_instance = typeof(to_instance.type())
 local instances: {to_instance} = {}
 	
 local times = 10000;
