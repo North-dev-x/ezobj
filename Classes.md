@@ -135,7 +135,7 @@ local Foo = class {
 }
 Foo.Bar = 400 -- ERROR: attempt to modify a readonly table
 ```
-*You can't add new fields to a class. if you need to do this, see **Initialization Functions** above.*
+*You can't add new fields to a class.*
 
 ### Typechecking
 Attempting to instantiate a class with incorrect types will result in a runtime error.
