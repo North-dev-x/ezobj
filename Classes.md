@@ -139,7 +139,7 @@ Foo.Bar = 400 -- ERROR: attempt to modify a readonly table
 
 ### Typechecking
 Attempting to instantiate a class with incorrect types will result in a runtime error.
-```lua
+```luau
 local Foo = class {
 	something = 5;
 	hello = "Hello";
