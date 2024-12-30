@@ -34,29 +34,6 @@ type SomeClass = typeof(SomeClass.type())
 ```
 Using the type hint will only autocomplete methods and fields you put into the class yourself, rather than the injected construction and extension methods that `ezobj` includes for you.
 
-### Initialization Functions
-Classes can include a `__init__` method which will be called automatically whenever the class is instantiated.
-
-```luau
-local SomeClass = class {
-	character = nil;
-	hrp = nil;
-	
-	__init__ = function(self: SomeClass)
-		if self.character ~= nil then
-			self.hrp = self.character:FindFirstChild("HumanoidRootPart")
-		end
-	end;
-}
-type SomeClass = typeof(SomeClass.type())
-
-local instance = SomeClass.new {
-	character = plr.Character or plr.CharacterAdded:Wait()
-}
-print(instance.HumanoidRootPart.Position) -- some vector3
-```
-This can be used to add custom constructor behavior, when `.new()`'s default behavior isn't enough for your use case.
-
 ### Instantiating Classes
 
 Classes can be instantiated with `Class.new()`.
@@ -73,10 +50,49 @@ local newFoo = Foo.new {
 newFoo:foobar() -- 4905
 ```
 
+Classes can also be instantiated in a shorthand way by calling the class as a function, i.e.
+```
+local newFoo = Foo {
+	bar = 4905;
+}
+newFoo:foobar() -- 4905
+```
+
+
 Classes do not need to be instantiated to be used, but if not instantiating or extending, I would recommend creating a normal table with the same values.
 ```luau
 Foo:foobar() -- 50
 ```
+
+#### Constructor Functions
+Classes can include a `constructor` method which changes the behavior of the .new() function.
+
+```luau
+local SomeClass = class {
+	character = nil;
+	hrp = nil;
+	
+	constructor = function(self: SomeClass, character: Model)
+		self.character = character
+		self.hrp = character:WaitForChild("HumanoidRootPart")
+		
+	end;
+}
+type SomeClass = typeof(SomeClass.type())
+
+local instance = SomeClass.new(plr.Character or plr.CharacterAdded:Wait())
+print(instance.HumanoidRootPart.Position) -- some vector3
+```
+This can be used to add custom constructor behavior, when `.new()`'s default behavior isn't enough for your use case.
+
+To instantiate a class that has a constructor without calling its constructor, the following syntax is provided.
+
+```luau
+local instance = SomeClass {
+	character = plr.Character or plr.CharacterAdded:Wait()
+}
+```
+*Calling the class as a function bypasses its constructor and grants the default behavior of .new().`
 
 ### Extending Classes
 
