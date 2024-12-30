@@ -30,7 +30,7 @@ test("ShouldFail", function()
 end)
 
 -- test inheritance --
---test("InheritanceTest", function()
+test("InheritanceTest", function()
 	local SomeClass = class {
 		val = 30;
 		div = function(self: any?,to_divide_with: number)
@@ -65,8 +65,8 @@ end)
 	if success then
 		return error("Should not be allowed to divide by zero on this class")
 	end
---	return 0; 
---end)
+	return 0; 
+end)
 
 -- test abstract class --
 test("AbstractClassTest", function()
