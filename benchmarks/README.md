@@ -12,7 +12,7 @@ On each iteration, push the result of a call of `method` to an array.
 
 Rust(built in release mode): 1-2ms
 
-Luau(with ezobj): 14-19ms
+Luau(with ezobj): 14-21ms
 
 Rust(opt-level 0): 20-22ms
 
