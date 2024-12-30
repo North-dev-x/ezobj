@@ -51,7 +51,7 @@ newFoo:foobar() -- 4905
 ```
 
 Classes can also be instantiated in a shorthand way by calling the class as a function, i.e.
-```
+```luau
 local newFoo = Foo {
 	bar = 4905;
 }
