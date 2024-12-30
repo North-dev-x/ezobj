@@ -4,6 +4,8 @@ local class = require(script.Parent)
 
 local passed = 0;
 local failed = 0;
+
+
 local errors = {}
 
 function test(test_name: string, func: () -> any?)
@@ -225,7 +227,7 @@ test("ImmutabilityForExtendedClass", function()
 		
 	end)
 	if success then return error("Class should not be able to be instantiated with incorrect types.") end
-
+ 
 	return 0;
 end)
 
@@ -233,29 +235,29 @@ local httpservice = game:GetService("HttpService")
 
 test("Speed Benchmark", function()
 
-	local to_instance = class({}::{
+	local ClassToInstance = class({}::{
 		value: number;
 		id: string;
-		method: (number) -> string;
-	})
-	type to_instance = typeof(to_instance)
-	local instances: {to_instance} = {}
-	
+		method: (any) -> string;
+	}) 
+	local instances: {string} = {}
+
 	local times = 10000;
 	local start = os.clock()
 	for i = 1,times do
-		
-		local instance: to_instance = to_instance {
+
+		local instance = ClassToInstance {
 			value = math.random(-20000,20000);
-			id = httpservice:GenerateGUID(false);
-			method = function(num: number)
-				return tostring(num)
+			id = httpservice:GenerateGUID(false); 
+			method = function(self: any)
+				return tostring(self.value)..self.id
 			end,
 		}
 		
-		table.insert(instances, instance)
+		table.insert(instances, instance:method())
 	end
 	print(times.." class instances took "..((os.clock() - start)*1000).."ms")
+	print(instances)
 	return 0;
 end)
 
