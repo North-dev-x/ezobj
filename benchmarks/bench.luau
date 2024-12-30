@@ -23,4 +23,7 @@ for i = 1,times do
 		
 	table.insert(instances, instance)
 end
+
 print(times.." class instances took "..((os.clock() - start)*1000).."ms")
+
+print(instances
