@@ -49,26 +49,26 @@ end
 	Abstract type for created objects. Can be used as a function return value for functions that return classes.
 	where T is type of initialization table
 ]]
-export type Object<T> = T 
+export type Object<T> = (T
 & {
-	new: (T?) -> T & {constructor: nil};
+	new: (T?) -> T;
 	extend: <I>(T,I) -> InheritedObject<T & I, T>;
 	type: () -> T;
 	constructor: nil;
-} & (T?) -> T
+}) & (T?) -> T
 
 
 --[[
 	Abstract type for objects that inherit from other objects. Can be used as a function return value for functions that return inherited classes.
 	where T is type of initialization table and I is inherited object type
 ]]
-export type InheritedObject<T,I> = T 
+export type InheritedObject<T,I> = (T
 & {
 	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject2<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
-} & (T?) -> T
+}) & (T?) -> T
 
 --[[
 	This is the WORST.
@@ -77,61 +77,54 @@ export type InheritedObject<T,I> = T
 	Feel free to add more inheritance levels if it is TRULY NEEDED, but 7 should be enough for most projects.
 ]]
 
-type InheritedObject2<T,I> = T 
-& (T?) -> T
+type InheritedObject2<T,I> = (T
 & {
 	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject3<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
-}
+}) & (T?) -> T
 
-type InheritedObject3<T,I> = T 
-& (T?) -> T
+type InheritedObject3<T,I> =( T 
 & {
 	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject4<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
-}
+}) & (T?) -> T 
 
-type InheritedObject4<T,I> = T 
-& (T?) -> T
+
+type InheritedObject4<T,I> = (T 
 & {
 	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject5<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
-	constructor: nil;
-}
+}) & (T?) -> T
 
-type InheritedObject5<T,I> = T 
-& (T?) -> T
+type InheritedObject5<T,I> = (T 
 & {
 	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject6<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
-	constructor: nil;
-}
+}) & (T?) -> T
 
-type InheritedObject6<T,I> = T 
-& (T?) -> T
+type InheritedObject6<T,I> = (T 
 & {
 	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> InheritedObject7<T & N,T>;
 	type: () -> T & {super: I};
 	super: I;
-}
+}) & (T?) -> T
 
-type InheritedObject7<T,I> = T 
-& (T?) -> T
+type InheritedObject7<T,I> = (T 
 & {
 	new: (T?) -> T & {super: I};
 	extend: <N>(T,N) -> unknown; -- will not work with autocomplete and will no longer be type-safe
 	type: () -> T & {super: I};
 	super: I;
-}
+}) & (T?) -> T
 
 --[[
 	add more inheritance levels here if you genuinely need it
