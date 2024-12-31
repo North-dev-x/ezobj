@@ -19,4 +19,4 @@ Rust(opt-level 0): 20-22ms
 Javascript(running on nodejs): 500-550ms
 
 ### Extras
-I do not believe this to be a conclusive test, as my methods may be lacking, my javascript may be terrible, and my 
+I do not believe this to be a conclusive test, as my methods may be lacking and my javascript may be terrible.
