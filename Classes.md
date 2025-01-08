@@ -58,7 +58,7 @@ local SomeClass = class {
 	
 	constructor = function(self: any, char: Model)
 		self.character = char
-		self.hrp = char:WaitForChild("HumanoidRootPart
+		self.hrp = char:WaitForChild("HumanoidRootPart")
 	end;
 }
 type SomeClass = typeof(SomeClass.type())
