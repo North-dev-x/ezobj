@@ -15,7 +15,7 @@ local Foo = class {
 		print(self.bar)
 	end
 }
-type Foo = typeof(Foo)
+type Foo = typeof(Foo.type())
 ```
 ### Instantiating Classes
 
@@ -65,8 +65,20 @@ type SomeClass = typeof(SomeClass)
 
 local instance = SomeClass.new(plr.Character or plr.CharacterAdded:Wait())
 print(instance.hrp.Position) -- some vector3
+
+
 ```
 This can be used to add custom constructor behavior, when `.new()`'s default behavior isn't enough for your use case.
+
+### .type() and type hinting
+When creating a type hint for a class, use .type() to get the type of a constructed instance, rather than the type of the actual class.
+```luau
+local SomeClass = class {
+	foo = "foo";
+}
+type SomeClass = typeof(SomeClass.type())
+```
+
 ### Extending Classes
 
 Classes can be extended with `Class:extend {}`.
@@ -74,9 +86,12 @@ Classes can be extended with `Class:extend {}`.
 local Bar = Foo:extend {
 	foo = 30; -- new member unique to this class
 	bar = "bar"; -- overrides field bar from superclass
+	foobar = function(self: any) -- overrides method foobar from superclass
+		print(self.foo)
+	end
 }
-Bar:foobar() -- "bar" - inherits this method from superclass Foo
-Bar.super:foobar() -- 50 - superclass methods only access the super table
+Bar:foobar() -- 30 - overrided method 
+Bar.super:foobar() -- "bar" - Superclass behavior retained with the super table
 ```
 Doing this creates a new class, with all of the members of the superclass, and any added in the provided table.
 
