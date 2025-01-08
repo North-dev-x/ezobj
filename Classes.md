@@ -56,12 +56,12 @@ local SomeClass = class {
 	character = nil;
 	hrp = nil;
 	
-	constructor = function(self: SomeClass, char: Model)
+	constructor = function(self: any, char: Model)
 		self.character = char
 		self.hrp = char:WaitForChild("HumanoidRootPart
 	end;
 }
-type SomeClass = typeof(SomeClass)
+type SomeClass = typeof(SomeClass.type())
 
 local instance = SomeClass.new(plr.Character or plr.CharacterAdded:Wait())
 print(instance.hrp.Position) -- some vector3
