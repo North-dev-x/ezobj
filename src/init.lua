@@ -17,9 +17,9 @@ local function getTableType(t)
 	local isDictionary = true
 	local isClassTable = true;
 	for k, _ in next, t do
-		if typeof(k) == "number" and k%1 == 0 and k > 0 then
+		if type(k) == "number" and k%1 == 0 and k > 0 then
 			isDictionary = false
-		elseif typeof(k) ~= "string" then
+		elseif type(k) ~= "string" then
 			isClassTable = false;
 		else
 			isArray = false
@@ -146,8 +146,8 @@ function ezobj.extend<I,T>(object: I, classtbl: T):
 
 	-- add more inheritance levels here if genuinely needed
 	-- {
-	if typeof(classtbl) ~= "table" then
-		return error("Expected table when reading class initializer, got "..typeof(classtbl),2)
+	if type(classtbl) ~= "table" then
+		return error("Expected table when reading class initializer, got "..type(classtbl),2)
 	end
 	local t = getTableType(object)
 	if t ~= "ClassTable" and t ~= "Abstract" then
@@ -161,7 +161,7 @@ function ezobj.extend<I,T>(object: I, classtbl: T):
 	local new_obj_metatable = {__index = object}
 
 	if object["constructor"] ~= nil then
-		if typeof(object["constructor"]) ~= "function" then
+		if type(object["constructor"]) ~= "function" then
 			return error("Key 'constructor' of class must be a function.")
 		end
 		classtbl.new = function(...): T & {super: I}
@@ -214,8 +214,8 @@ function ezobj.extend<I,T>(object: I, classtbl: T):
 
 			if tbl then
 				for k,v in pairs(tbl) do
-					if typeof(v) ~= typeof(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
-						return error("Expected "..typeof(object[k]).." when instantiating object key '"..k.."', got "..typeof(v))
+					if type(v) ~= type(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
+						return error("Expected "..type(object[k]).." when instantiating object key '"..k.."', got "..type(v))
 					end
 					rawset(obj,k,v)
 				end 
@@ -266,8 +266,8 @@ function ezobj.extend<I,T>(object: I, classtbl: T):
 
 		if tbl then
 			for k,v in pairs(tbl) do
-				if typeof(v) ~= typeof(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
-					return error("Expected "..typeof(object[k]).." when instantiating object key '"..k.."', got "..typeof(v))
+				if type(v) ~= type(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
+					return error("Expected "..type(object[k]).." when instantiating object key '"..k.."', got "..type(v))
 				end
 				rawset(obj,k,v)
 			end 
@@ -308,8 +308,8 @@ end
 ]] 
 function ezobj:__call<T>(object: T): Object<T>
 	-- where T: {[string]: any}
-	if typeof(object) ~= "table" then
-		return error("Expected table when reading class initializer, got "..typeof(object),2)
+	if type(object) ~= "table" then
+		return error("Expected table when reading class initializer, got "..type(object),2)
 	end
 	local t = getTableType(object)
 	if t ~= "ClassTable" and t ~= "Abstract" then
@@ -322,7 +322,7 @@ function ezobj:__call<T>(object: T): Object<T>
 	end
 	local new_obj_metatable = {__index = object}
 	if object["constructor"] ~= nil then
-		if typeof(object["constructor"]) ~= "function" then
+		if type(object["constructor"]) ~= "function" then
 			return error("Key 'constructor' of class must be a function.")
 		end
 		object.new = function(...): T
@@ -348,8 +348,8 @@ function ezobj:__call<T>(object: T): Object<T>
 			end
 			if tbl then
 				for k,v in pairs(tbl) do
-					if typeof(v) ~= typeof(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
-						return error("Expected "..typeof(object[k]).." when instantiating object key '"..k.."', got "..typeof(v)) 
+					if type(v) ~= type(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
+						return error("Expected "..type(object[k]).." when instantiating object key '"..k.."', got "..type(v)) 
 					end
 					obj[k] = v
 				end 
@@ -372,8 +372,8 @@ function ezobj:__call<T>(object: T): Object<T>
 		end
 		if tbl then
 			for k,v in pairs(tbl) do
-				if typeof(v) ~= typeof(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
-					return error("Expected "..typeof(object[k]).." when instantiating object key '"..k.."', got "..typeof(v)) 
+				if type(v) ~= type(object[k]) and type(v) ~= "nil" and type(object[k]) ~= "nil" and config.type_checking then
+					return error("Expected "..type(object[k]).." when instantiating object key '"..k.."', got "..type(v)) 
 				end
 				obj[k] = v
 			end 
