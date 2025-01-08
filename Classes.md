@@ -38,15 +38,25 @@ Classes do not need to be instantiated to be used, but if not instantiating or e
 Foo:foobar() -- 50
 ```
 
+Classes can also be instantiated with the following syntax, instead of with .new().
+
+```luau
+local newFoo = Foo()
+
+local newFoo = Foo {
+	bar = 391238;
+}
+```
+
 ### Initialization Functions
-Classes can include a `__init__` method which will be called automatically whenever the class is instantiated.
+Classes can include a `constructor` method which will override the default behavior or `.new()`.
 
 ```lua
 local SomeClass = class {
 	character = nil;
 	hrp = nil;
 	
-	__init__ = function(self: SomeClass)
+	constructor = function(self: SomeClass)
 		if self.character ~= nil then
 			self.hrp = self.character:FindFirstChild("HumanoidRootPart")
 		end
