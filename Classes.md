@@ -98,8 +98,10 @@ local Bar = Foo:extend {
 		print(self.foo)
 	end
 }
-Bar:foobar() -- 30 - overrided method 
-Bar.super:foobar() -- "bar" - Superclass behavior retained with the super table
+
+local instance = Bar()
+instance:foobar() -- 30 - overrided method 
+instance.super:foobar() -- "bar" - Superclass behavior retained with the super table
 ```
 Doing this creates a new class, with all of the members of the superclass, and any added in the provided table.
 
