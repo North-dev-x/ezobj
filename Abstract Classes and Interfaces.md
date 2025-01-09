@@ -115,8 +115,8 @@ interface NPCInterface {
   dialogue: [{
     text: string;
     options: {
-      Goodbye: (self: NPCInterface, plr: any) => void;
-      [key: string]: (self: NPCInterface, plr: any) => void;
+      Goodbye: (plr: any) => void;
+      [key: string]: (plr: any) => void;
     };
   }];
   clicked: (self: NPCInterface, plr: any) => void;
