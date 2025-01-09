@@ -3,7 +3,7 @@ A class is created by calling the module as a function.
 function ezobj:__call<T>(object: T): Object<T>
 ```
 Creates a class with the given table as its members.
-`object` must be an [empty table](ezobj/Abstract%20Classes) or a dictionary(key-value pairs).
+`object` must be an [empty table](Abstract%20Classes%20and%20Interfaces.md) or a dictionary(key-value pairs).
 
 Example usage:
 ```luau

@@ -1,7 +1,7 @@
 ezobj's classes, being Lua tables, can be passed to and returned from functions, allowing for a lot of interesting shenanigans you can get yourself into.
 
 Like a class, with a method, that returns a class:
-```lua
+```luau
 local class = require(ezobj-path)
 
 local TestClass = class {
@@ -18,7 +18,7 @@ print(new.val) -- 50
 ```
 
 Or a function that composes 2 classes together:
-```lua
+```luau
 local class = require(ezobj-path)
 
 function compose<A,B>(class1: A, class2: B): class.Object<A & B>

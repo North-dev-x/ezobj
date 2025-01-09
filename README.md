@@ -61,7 +61,7 @@ y.super:method(500) -- 500 - Access superclass methods with class.super
 ### Documentation
 [Classes](Classes.md)
 
-[Abstract Classes](Abstract%20Classes.md)
+[Abstract Classes](Abstract%20Classes%20and%20Interfaces.md)
 
 [Classes are first-class objects](Classes%20are%20first-class%20objects.md)
 
