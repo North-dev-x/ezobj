@@ -1,6 +1,6 @@
 [package]
 name = "north-dev-x/ezobj"
-version = "0.5.0"
+version = "0.6.0"
 description = "An easy-to-use OOP implementation for Roblox."
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
