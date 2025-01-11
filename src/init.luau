@@ -1,59 +1,26 @@
---!nonstrict
-
-local ezobj = {}
-
-type function optional<T>(input: T)
-	if not input:is("table") then return error("") end
-
-	local output = types.newtable()
-
-	for key, value in input:properties() do
-		output:setproperty(key, types.unionof(value.write,types.singleton(nil)))
-	end
-
-	local indexer = input:indexer()
-	if indexer then
-		output:setindexer(indexer.index,types.unionof(indexer.writeresult or indexer.readresult,types.singleton(nil)))
-	end
-
-	return output
-end
-
-type obj_functions<T> = ({
-	new: (optional<T>?) -> T;
-	type: () -> T?;
-}) 
-
-type obj_functions_extended<T,I> = {
-	new: (optional<T>?) -> T & {super: I};
-	type: () -> T?;
-} & (optional<T>?) -> T & {super: I}
-
-function create(_,classtbl)
-	--if type(classtbl) ~= "table" then return classtbl end
-	local stripped_tbl = table.clone(classtbl)
-	local constructed_obj_meta = {__index = stripped_tbl}
+--!nocheck
+function create<T>(struct_tbl: T): <I>(I) -> (T) -> T & (I?)
+	if type(struct_tbl) ~= "table" then error("Struct creation must receive a table.") end
 	
-	--function classtbl.new(x: T?): T
+	local constructed_meta = {__index = struct_tbl}
+	
+	return function(impl)
 		
-	--	return setmetatable({}, constructed_obj_meta)
-	--end
-	
-	classtbl.type = function()
-		return stripped_tbl;
+		if type(impl) ~= "table" then 
+			return function(construct_definition) 
+				return construct_definition 
+			end 
+		end
+		
+		return function(construct_definition)
+			for k,v in impl do
+				construct_definition[k] = v;
+			end
+			
+			return construct_definition	 
+		end
 	end
-	return setmetatable(classtbl,{
-		__index = ezobj;
-	
-	}) :: typeof(classtbl) & obj_functions<typeof(classtbl)> & typeof(ezobj)
 end
 
-function ezobj.extend<T,I>(from: T, to: I): T & I & obj_functions<T & I> & {extend: <I>(T,I) -> T & I & obj_functions<T & I> & {super: I}} & {super: I}
-
-end
-
-
-return setmetatable(ezobj, {
-	__call = create
-})
+return create
 
